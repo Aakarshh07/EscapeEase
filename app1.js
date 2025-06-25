@@ -13,7 +13,7 @@ const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const { reviewSchema } = require("./schema.js");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+// const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -62,9 +62,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
 
-// const Mongo_url = "mongodb://127.0.0.1:27017/travel";
+const Mongo_url = "mongodb://127.0.0.1:27017/travel";
 
-const dbUrl = process.env.ATLASDB_URL;
+// const dbUrl = process.env.ATLASDB_URL;
 
 main()
   .then(() => {
@@ -78,13 +78,13 @@ async function main() {
   await mongoose.connect(dbUrl);
 }
 
-const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  touchAfter: 24 * 60 * 60,
-  crypto: {
-    secret: "process.env.SECRET",
-  },
-});
+// const store = MongoStore.create({
+//   mongoUrl: dbUrl,
+//   touchAfter: 24 * 60 * 60,
+//   crypto: {
+//     secret: "process.env.SECRET",
+//   },
+// });
 
 store.on("error", function (e) {
   console.log("SESSION STORE ERROR", e);
@@ -92,7 +92,7 @@ store.on("error", function (e) {
 
 // Session configuration
 const sessionOptions = {
-  store,
+  // store,
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false,
