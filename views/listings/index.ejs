@@ -1,0 +1,218 @@
+<% layout("/layouts/boilerplate") %>
+
+<!-- FILTERS SECTION -->
+<style>
+  .filters-container {
+    background: #f8f9fa;
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.04);
+    padding: 1.25rem 1rem 0.5rem 1rem;
+    margin-bottom: 2.5rem;
+    border: 1px solid #e3e6ea;
+    max-width: 100%;
+  }
+  .filters-container .input-group-lg > .form-control,
+  .filters-container .input-group-lg > .input-group-text {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+  }
+  .filters-container label {
+    font-size: 0.97rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+  .filters-container .form-select,
+  .filters-container .form-control {
+    font-size: 0.97rem;
+    border-radius: 2rem;
+    padding: 0.35rem 1rem;
+  }
+  .filters-container .btn,
+  .filters-container .btn-lg {
+    font-size: 1rem;
+    border-radius: 2rem;
+    padding: 0.45rem 1.5rem;
+  }
+  .filters-container .advanced-row {
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+  .filters-container .form-check-label {
+    font-size: 0.95rem;
+  }
+  .filters-container .form-check-input {
+    margin-top: 0.2rem;
+  }
+  .listings-grid-row {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
+    clear: both;
+  }
+  @media (max-width: 768px) {
+    .filters-container {
+      padding: 0.7rem 0.5rem 0.3rem 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .filters-container .input-group-lg > .form-control {
+      font-size: 0.95rem;
+    }
+    .filters-container .btn-lg {
+      font-size: 0.95rem;
+      padding: 0.35rem 1rem;
+    }
+    .listings-grid-row {
+      margin-top: 0.5rem !important;
+    }
+  }
+</style>
+<div class="filters-container">
+  <form id="filtersForm" method="get" action="/listings">
+    <div class="row g-2 align-items-center mb-2">
+      <!-- Search Input -->
+      <div class="col-12 col-md-7">
+        <div class="input-group input-group-lg">
+          <span class="input-group-text bg-light border-0"><i class="fas fa-search"></i></span>
+          <input type="text" name="query" class="form-control border-0" placeholder="Search by destination, title, etc." value="<%= (typeof filters !== 'undefined' && filters.query) ? filters.query : '' %>">
+        </div>
+      </div>
+      <!-- Advanced Filters Toggle -->
+      <div class="col-12 col-md-5 text-md-end mt-2 mt-md-0">
+        <a class="btn btn-outline-dark btn-sm fw-semibold px-3 py-2" data-bs-toggle="collapse" href="#advancedFilters" role="button" aria-expanded="false" aria-controls="advancedFilters">
+          <i class="fas fa-sliders-h me-1"></i> Advanced Filters
+        </a>
+        <button class="btn btn-primary btn-sm fw-semibold ms-2 px-3 py-2" type="submit"><i class="fa-solid fa-filter me-1"></i>Filter</button>
+        <a href="/listings" class="btn btn-outline-secondary btn-sm ms-2 px-3 py-2"><i class="fa-solid fa-rotate-left me-1"></i>Reset</a>
+      </div>
+    </div>
+
+    <!-- Collapsible Advanced Filters -->
+    <div class="collapse mt-2" id="advancedFilters">
+      <div class="row g-2 advanced-row">
+        <!-- Category -->
+        <div class="col-6 col-md-3">
+          <label for="category" class="form-label"><i class="fa-solid fa-layer-group me-1"></i>Category</label>
+          <select name="category" id="category" class="form-select">
+            <option value="">All</option>
+            <% (categories || []).forEach(cat => { %>
+              <option value="<%= cat %>" <%= (typeof filters !== 'undefined' && filters.category === cat) ? 'selected' : '' %>><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></option>
+            <% }) %>
+          </select>
+        </div>
+        <!-- Price Range -->
+        <div class="col-6 col-md-3">
+          <label class="form-label"><i class="fa-solid fa-indian-rupee-sign me-1"></i>Price</label>
+          <div class="input-group">
+            <span class="input-group-text">₹</span>
+            <input type="number" name="minPrice" class="form-control" placeholder="Min" value="<%= (typeof filters !== 'undefined' && filters.minPrice) ? filters.minPrice : '' %>">
+            <span class="input-group-text">to</span>
+            <input type="number" name="maxPrice" class="form-control" placeholder="Max" value="<%= (typeof filters !== 'undefined' && filters.maxPrice) ? filters.maxPrice : '' %>">
+          </div>
+        </div>
+        <!-- Sort By -->
+        <div class="col-6 col-md-3">
+          <label for="sortBy" class="form-label"><i class="fa-solid fa-sort me-1"></i>Sort</label>
+          <select name="sortBy" id="sortBy" class="form-select">
+            <option value="newest" <%= (typeof filters !== 'undefined' && filters.sortBy === 'newest') ? 'selected' : '' %>>Newest</option>
+            <option value="price_asc" <%= (typeof filters !== 'undefined' && filters.sortBy === 'price_asc') ? 'selected' : '' %>>Price: Low-High</option>
+            <option value="price_desc" <%= (typeof filters !== 'undefined' && filters.sortBy === 'price_desc') ? 'selected' : '' %>>Price: High-Low</option>
+            <option value="rating" <%= (typeof filters !== 'undefined' && filters.sortBy === 'rating') ? 'selected' : '' %>>Top Rated</option>
+          </select>
+        </div>
+        <!-- Property Type -->
+        <div class="col-6 col-md-3">
+            <label for="propertyType" class="form-label"><i class="fa-solid fa-house-user me-1"></i>Type</label>
+            <select name="propertyType" id="propertyType" class="form-select">
+                <option value="">All</option>
+                <% ['entire-place', 'private-room', 'shared-room'].forEach(type => { %>
+                    <option value="<%= type %>" <%= (typeof filters !== 'undefined' && filters.propertyType === type) ? 'selected' : '' %>><%= type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) %></option>
+                <% }); %>
+            </select>
+        </div>
+        <!-- Instant Bookable -->
+        <div class="col-6 col-md-3 d-flex align-items-center">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="instantBookable" value="true" id="instantBookable" <%= (typeof filters !== 'undefined' && filters.instantBookable) ? 'checked' : '' %>>
+                <label class="form-check-label" for="instantBookable"><i class="fa-solid fa-bolt me-1"></i>Instant</label>
+            </div>
+        </div>
+        <!-- Amenities -->
+        <div class="col-12 col-md-9">
+            <label class="form-label"><i class="fa-solid fa-couch me-1"></i>Amenities</label>
+            <div class="row row-cols-3 row-cols-md-6 g-1">
+                 <% ['wifi', 'kitchen', 'parking', 'air-conditioning', 'heating', 'tv', 'washer', 'dryer', 'pool', 'gym'].forEach(amenity => { %>
+                    <div class="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="amenities" value="<%= amenity %>" id="amenity-<%= amenity %>" <%= (typeof filters !== 'undefined' && filters.amenities && filters.amenities.includes(amenity)) ? 'checked' : '' %>>
+                            <label class="form-check-label" for="amenity-<%= amenity %>"><%= amenity.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) %></label>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- LISTINGS GRID -->
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 listings-grid-row">
+  <% for (let listing of allListings) { %>
+    <div class="col">
+      <div class="card h-100 shadow-lg border-0 rounded-4 overflow-hidden" style="width: 100%;">
+        <img 
+          src="<%= (listing.images && listing.images[0] && listing.images[0].url) ? listing.images[0].url : (listing.image?.url || 'https://via.placeholder.com/320x180?text=No+Image') %>" 
+          class="card-img-top object-fit-cover" 
+          alt="<%= listing.title %> image"
+          style="max-height: 220px; min-height: 180px; background: #f8f9fa;">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title fw-bold text-primary"><i class="fa-solid fa-location-dot me-1"></i> <%= listing.title %></h5>
+          <p class="card-text flex-grow-1 text-muted">
+            <%= listing.description ? listing.description.substring(0, 100) + (listing.description.length > 100 ? '...' : '') : 'No description available.' %>
+          </p>
+          <p class="card-text fw-bold mb-2">
+            <span class="text-success">&#8377; <%= (listing.price != null) ? listing.price.toLocaleString("en-IN") : 'N/A' %></span> / night
+            <i class="tax-info"> &nbsp; &nbsp; +18% taxes</i>
+          </p>
+          <a href="/listings/<%= listing._id %>" class="btn btn-outline-primary mt-auto rounded-pill">View Details <i class="fa-solid fa-arrow-right ms-1"></i></a>
+        </div>
+        <div class="card-footer text-muted bg-white border-0">
+          <small><i class="fas fa-map-marker-alt me-1"></i><%= listing.location || 'Unknown location' %>, <%= listing.country || '' %></small>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<!-- PAGINATION -->
+<% if (pagination && pagination.totalPages > 1) { %>
+  <nav class="pagination mt-4">
+    <% if (pagination.hasPrev) { %>
+      <a class="page-link" href="?page=<%= pagination.currentPage - 1 %>">&laquo; Prev</a>
+    <% } %>
+    <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+      <a class="page-link <%= i === pagination.currentPage ? 'active' : '' %>" href="?page=<%= i %>"><%= i %></a>
+    <% } %>
+    <% if (pagination.hasNext) { %>
+      <a class="page-link" href="?page=<%= pagination.currentPage + 1 %>">Next &raquo;</a>
+    <% } %>
+  </nav>
+<% } %>
+
+<script>
+// Tax toggle
+const taxSwitch = document.getElementById("switchCheckDefault");
+if (taxSwitch) {
+  taxSwitch.addEventListener("click", () => {
+    let taxInfo = document.getElementsByClassName("tax-info");
+    for (info of taxInfo) {
+      if (info.style.display != "inline") {
+        info.style.display = "inline";
+      } else {
+        info.style.display = "none";
+      }
+    }
+  });
+}
+</script>

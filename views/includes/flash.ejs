@@ -1,0 +1,7 @@
+<% if (success) { %>
+  <div class="alert alert-success fade-in">
+    <span class="alert-icon"><i class="fa-solid fa-circle-check"></i></span>
+    <span><%= success %></span>
+    <button class="alert-close" onclick="this.closest('.alert').remove();">&times;</button>
+  </div>
+<% } %>

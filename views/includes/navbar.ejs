@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-md bg-primary navbar-dark border-bottom sticky-top shadow">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" href="/listings">
+      <i class="fa-regular fa-compass"></i> EscapeEase
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="/listings">Explore</a>
+        <a class="nav-link" href="/listings/new">List Your Property</a>
+      </div>
+      <div class="navbar-nav ms-3">
+        <% if(!curUser) { %>
+          <a class="nav-link active" aria-current="page" href="/signup"><b>Sign-Up</b></a>
+          <a class="nav-link" href="/login"><b>Login</b></a>
+        <% } %>
+        <% if(curUser) { %>
+          <a class="nav-link" href="/logout"><b>Logout</b></a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>
